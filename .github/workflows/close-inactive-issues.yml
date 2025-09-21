@@ -1,0 +1,72 @@
+---
+name: Close Inactive Issues
+
+"on":
+  schedule:
+    # Run every day at 9:00 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  issues: write
+
+jobs:
+  close-inactive-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close inactive issues
+        uses: actions/stale@v9
+        with:
+          # Repository token with permissions to close issues
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Days before an issue is considered stale
+          days-before-stale: 30
+
+          # Days before a stale issue is closed
+          days-before-close: 7
+
+          # Label to apply to stale issues
+          stale-issue-label: 'stale'
+
+          # Comment to post on stale issues
+          stale-issue-message: |
+            This issue has been automatically marked as stale because it has
+            not had recent activity.
+            It will be closed in 7 days if no further activity occurs.
+
+            If this issue is still relevant, please:
+            - Add a comment to keep it open
+            - Add the 'pinned' label to prevent automatic closure
+            - Update the issue with current information
+
+            Thank you for your contributions to pond.repo! 🌊
+
+          # Comment to post when closing issues
+          close-issue-message: |
+            This issue has been automatically closed due to inactivity.
+
+            If you believe this issue should remain open, please reopen it and
+            add recent context or the 'pinned' label to prevent future
+            automatic closure.
+
+            Thank you for understanding! 🌊
+
+          # Labels that exempt issues from being marked stale
+          exempt-issue-labels: >-
+            pinned,security,critical,help-wanted,good-first-issue
+
+          # Don't mark issues stale if they have these labels
+          exempt-all-issue-assignees: false
+
+          # Remove stale label when issues receive new comments
+          remove-stale-when-updated: true
+
+          # Enable debug mode for troubleshooting
+          debug-only: false
+
+          # Ascending order (oldest first)
+          ascending: true
+
+          # Maximum number of operations per run
+          operations-per-run: 100
